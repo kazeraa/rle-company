@@ -367,3 +367,16 @@ CONFIG.management.forEach(
     `;
   }
 );
+
+// EVENTS
+const eventsGrid = document.getElementById("eventsGrid");
+
+CONFIG.eventsList.forEach((item) => {
+  eventsGrid.innerHTML += `
+    <div class="glass event-card">
+      <small>${item.date}</small>
+      <h3>${item.title}</h3>
+      <p>${item.desc}</p>
+    </div>
+  `;
+});

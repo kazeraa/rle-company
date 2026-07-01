@@ -232,11 +232,85 @@ const gallery =
 
 CONFIG.gallery.forEach(
   (img) => {
+
     gallery.innerHTML += `
-      <div class="glass gallery-item">
-        <img src="${img}">
+      <div
+        class="glass gallery-item">
+
+        <img
+          src="${img}"
+          onclick="openImageModal('${img}')">
+
       </div>
     `;
+
+  }
+);
+
+const imageModal =
+  document.getElementById(
+    "imageModal"
+  );
+
+const modalImage =
+  document.getElementById(
+    "modalImage"
+  );
+
+function openImageModal(
+  img
+) {
+
+  modalImage.src =
+    img;
+
+  imageModal.classList.remove(
+    "hidden"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+}
+
+function closeImageModal() {
+
+  imageModal.classList.add(
+    "hidden"
+  );
+
+  document.body.style.overflow =
+    "";
+}
+
+// ESC
+document.addEventListener(
+  "keydown",
+  (e) => {
+
+    if (
+      e.key === "Escape"
+    ) {
+
+      closeImageModal();
+
+    }
+
+  }
+);
+
+// CLICK BACKGROUND
+imageModal.addEventListener(
+  "click",
+  (e) => {
+
+    if (
+      e.target === imageModal
+    ) {
+
+      closeImageModal();
+
+    }
+
   }
 );
 

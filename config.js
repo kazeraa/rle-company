@@ -29,16 +29,18 @@ const CONFIG = {
   ],
 
   eventsList: [
-    { title: "Friday Night Convoy", date: "12 July 2026", desc: "Convoy santai malam Jumat bersama member PT. RLE." },
-    { title: "RLE Championship", date: "25 July 2026", desc: "Event kompetitif untuk mencari driver terbaik PT. RLE." },
-    { title: "Anniversary Convoy", date: "15 August 2026", desc: "Perayaan anniversary komunitas dengan rute spesial." }
+    { title: "Contest Truck", date: "3 July 2026", desc: "Contest Truck bersama member PT. RLE." },
+    { title: "Anniversary Convoy", date: "15 August 2027", desc: "Perayaan anniversary komunitas dengan rute spesial." }
   ],
 
   gallery: [
-    "https://files.catbox.moe/1eem2n.jpg",
-    "https://files.catbox.moe/4cjpft.jpg",
-    "https://files.catbox.moe/hkoheg.jpg",
-    "https://files.catbox.moe/5ly0pv.jpg",
+    "https://files.catbox.moe/9c382c.jpg",
+    "https://files.catbox.moe/6hk8ak.jpg",
+    "https://files.catbox.moe/8imdmi.jpg",
+    "https://files.catbox.moe/akojp7.jpg",
+    "https://files.catbox.moe/n1zucn.jpg",
+    "https://files.catbox.moe/3xq4qe.jpg",
+    "https://files.catbox.moe/724opj.jpg"
   ],
 
   news: [
@@ -48,15 +50,10 @@ const CONFIG = {
       desc: "Pendaftaran anggota baru PT. RLE resmi dibuka untuk komunitas Truckers of Europe 3."
     },
     {
-      date: "10 JUL 2026",
-      title: "Convoy Schedule",
-      desc: "Jadwal convoy mingguan telah diperbarui untuk seluruh member aktif."
+      date: "3 JUL 2026",
+      title: "Contest Truck",
+      desc: "Jadwal contest truck mingguan telah diperbarui untuk seluruh member aktif."
     },
-    {
-      date: "15 JUL 2026",
-      title: "Partnership",
-      desc: "PT. RLE membuka peluang kerja sama dengan komunitas TOE3 lainnya."
-    }
   ],
 
   management: [

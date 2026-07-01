@@ -48,11 +48,6 @@ const CONFIG = {
       desc: "Pendaftaran anggota baru PT. RLE resmi dibuka untuk komunitas Truckers of Europe 3."
     },
     {
-      date: "05 JUL 2026",
-      title: "Fleet Update",
-      desc: "PT. RLE memperbarui daftar fleet utama untuk convoy dan event komunitas."
-    },
-    {
       date: "10 JUL 2026",
       title: "Convoy Schedule",
       desc: "Jadwal convoy mingguan telah diperbarui untuk seluruh member aktif."
@@ -67,29 +62,19 @@ const CONFIG = {
   management: [
     {
       name: "Fahrizal",
-      role: "CEO",
+      role: "ADMIN 1",
       photo: "LINK_FOTO_FOUNDER_CATBOX"
     },
     {
-      name: "soon",
-      role: "CO-CEO",
+      name: "Udin",
+      role: "ADMIN 2",
       photo: "LINK_FOTO_DIRECTOR_CATBOX"
     },
     {
-      name: "soon",
-      role: "ADMIN 1",
+      name: "Akbar",
+      role: "ADMIN 3",
       photo: "LINK_FOTO_MANAGER_CATBOX"
     },
-    {
-      name: "soon",
-      role: "ADMIN 2",
-      photo: "LINK_FOTO_SUPERVISOR_CATBOX"
-    },
-    {
-      name: "soon",
-      role: "ADMIN 3",
-      photo: "LINK_FOTO_EVENT_CATBOX"
-    }
   ],
 
   contact: {

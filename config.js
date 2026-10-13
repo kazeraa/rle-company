@@ -9,7 +9,7 @@ const RLE_CONFIG = {
     },
 
     links: {
-        discord: "https://discord.gg/yourserver",
+        discord: "https://discord.gg/BXpRTCaJau",
         whatsapp: "https://chat.whatsapp.com/IH5ROjY8vP6LRtgEzCwjoO",
         instagram: "https://instagram.com/rle.toe3",
         tiktok: "https://tiktok.com/@rle.toe3"
@@ -18,7 +18,10 @@ const RLE_CONFIG = {
     recruitment: {
         status: "OPEN",
         text: "RECRUITMENT OPEN",
-        button: "JOIN RLE"
+        buttons: [
+            { label: "WhatsApp", link: "https://chat.whatsapp.com/IH5ROjY8vP6LRtgEzCwjoO?s=cl&p=a&mlu=4&iam=0" },
+            { label: "Discord", link: "https://discord.gg/BXpRTCaJau" }
+        ]
     },
 
     stats: {

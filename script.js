@@ -168,25 +168,26 @@ document.addEventListener("DOMContentLoaded", () => {
          */
 
         document
-            .querySelectorAll(
-                ".join-button, .nav-button"
-            )
-            .forEach(button => {
+            .querySelectorAll(".join-button")
+            .forEach((button, index) => {
+                const recruitmentButton =
+                    RLE_CONFIG.recruitment.buttons[index];
 
-                if (
-                    button.classList.contains(
-                        "join-button"
-                    ) ||
-                    button.classList.contains(
-                        "nav-button"
-                    )
-                ) {
-
-                    button.textContent =
-                        RLE_CONFIG.recruitment.button;
-
+                if (!recruitmentButton) {
+                    return;
                 }
 
+                button.href =
+                    RLE_CONFIG.links[recruitmentButton.link] ||
+                    recruitmentButton.link;
+
+                const arrow = document.createElement("span");
+                arrow.textContent = "↗";
+
+                button.replaceChildren(
+                    document.createTextNode(`${recruitmentButton.label} `),
+                    arrow
+                );
             });
 
     }

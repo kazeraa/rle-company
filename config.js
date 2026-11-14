@@ -11,28 +11,28 @@ const RLE_CONFIG = {
     links: {
         discord: "https://discord.gg/BXpRTCaJau",
         whatsapp: "https://chat.whatsapp.com/IH5ROjY8vP6LRtgEzCwjoO",
-        instagram: "https://instagram.com/rle.toe3",
-        tiktok: "https://tiktok.com/@rle.toe3"
+        instagram: "https://www.instagram.com/rans_logistik_europa?psln=NnJsc2EwZGRjYWY2",
+        tiktok: "https://www.tiktok.com/@rans_logistik_europe?"
     },
 
     recruitment: {
         status: "OPEN",
         text: "RECRUITMENT OPEN",
         buttons: [
-            { label: "WhatsApp", link: "https://chat.whatsapp.com/IH5ROjY8vP6LRtgEzCwjoO?s=cl&p=a&mlu=4&iam=0" },
+            //{ label: "WhatsApp", link: "https://chat.whatsapp.com/IH5ROjY8vP6LRtgEzCwjoO?s=cl&p=a&mlu=4&iam=0" },
             { label: "Discord", link: "https://discord.gg/BXpRTCaJau" }
         ]
     },
 
     stats: {
-        drivers: "50+",
+        drivers: "400+",
         convoys: "100+",
         fleet: "25+",
         experience: "3+"
     },
 
     companyInfo: {
-        founded: "2023",
+        founded: "2026",
         headquarters: "Indonesia",
         industry: "Virtual Trucking",
         platform: "Truckers of Europe 3"

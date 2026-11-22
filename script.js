@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ".fleet-card, " +
             ".gallery-item, " +
             ".convoy-item, " +
+            ".identity-section, " +
             ".stat"
         );
 

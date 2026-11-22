@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLE - Sistem Kartu Identitas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="../assets/logo rle.jpeg" alt="Logo RLE">
+            <div>
+                <strong>RLE</strong>
+                <span>IDENTITY SYSTEM</span>
+            </div>
+        </div>
+
+        <nav>
+            <button class="nav-item active admin-only" data-view="dashboard">
+                <span class="nav-icon">⌂</span>
+                Dashboard
+            </button>
+            <button class="nav-item admin-only" data-view="members">
+                <span class="nav-icon">◫</span>
+                Data Anggota
+            </button>
+            <button class="nav-item" data-view="check">
+                <span class="nav-icon">⌕</span>
+                Cek Identitas
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="status-dot" id="connectionDot"></span>
+            <span id="connectionStatus">Memeriksa koneksi Supabase...</span>
+        </div>
+    </aside>
+
+    <main>
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SYSTEM / IDENTITAS</p>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="topbar-actions">
+                <button class="secondary-button admin-only" id="migrateLocalData">Impor Data Browser Lama</button>
+                <button class="secondary-button admin-only" id="openMemberForm">+ Tambah Anggota</button>
+                <button class="primary-button" id="authButton">LOGIN ADMIN</button>
+            </div>
+        </header>
+
+        <section class="view active" id="dashboardView">
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Total Anggota</span>
+                    <strong id="totalMembers">0</strong>
+                    <small>TERDAFTAR</small>
+                </article>
+                <article class="stat-card">
+                    <span>Anggota Aktif</span>
+                    <strong id="activeMembers">0</strong>
+                    <small>STATUS VALID</small>
+                </article>
+                <article class="stat-card">
+                    <span>Penambahan Baru</span>
+                    <strong id="newMembers">0</strong>
+                    <small>BULAN INI</small>
+                </article>
+            </div>
+
+            <div class="dashboard-grid">
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">TERBARU</p>
+                            <h2>Anggota Terdaftar</h2>
+                        </div>
+                        <button class="text-button" data-view-target="members">Lihat semua →</button>
+                    </div>
+                    <div id="recentMembers" class="member-list"></div>
+                </article>
+
+                <article class="panel quick-check">
+                    <p class="eyebrow">QUICK CHECK</p>
+                    <h2>Verifikasi Identitas</h2>
+                    <p>Masukkan ID anggota untuk memeriksa keabsahan kartu.</p>
+                    <form id="quickCheckForm">
+                        <input id="quickId" type="text" placeholder="Contoh: RLE-000001" autocomplete="off" required>
+                        <button type="submit" class="primary-button">CEK SEKARANG</button>
+                    </form>
+                </article>
+            </div>
+        </section>
+
+        <section class="view" id="membersView">
+            <div class="toolbar">
+                <label class="search-box">
+                    <span>⌕</span>
+                    <input id="memberSearch" type="search" placeholder="Cari nama atau ID anggota...">
+                </label>
+                <select id="statusFilter" aria-label="Filter status">
+                    <option value="ALL">Semua Status</option>
+                    <option value="ACTIVE">Aktif</option>
+                    <option value="INACTIVE">Tidak Aktif</option>
+                </select>
+            </div>
+            <div class="panel table-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID ANGGOTA</th>
+                            <th>NAMA</th>
+                            <th>DIVISI</th>
+                            <th>BERGABUNG</th>
+                            <th>STATUS</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="view" id="checkView">
+            <div class="check-layout">
+                <article class="panel check-search">
+                    <p class="eyebrow">VERIFIKASI PUBLIK</p>
+                    <h2>Cek kartu identitas</h2>
+                    <p>Gunakan ID yang tercetak pada kartu untuk memastikan status keanggotaan.</p>
+                    <form id="publicCheckForm">
+                        <input id="publicId" type="text" placeholder="Masukkan ID anggota" autocomplete="off" required>
+                        <button type="submit" class="primary-button">VERIFIKASI ID</button>
+                    </form>
+                </article>
+                <article class="panel result-panel" id="checkResult">
+                    <div class="empty-result">
+                        <div class="result-icon">⌕</div>
+                        <p>Menunggu pencarian identitas</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="authDialog">
+        <form id="authForm">
+            <div class="dialog-header">
+                <div>
+                    <p class="eyebrow">AKSES TERBATAS</p>
+                    <h2>Login Admin / Manajemen</h2>
+                </div>
+                <button type="button" class="close-button" id="closeAuth" aria-label="Tutup">×</button>
+            </div>
+            <div class="form-grid">
+                <label>
+                    Email Admin / Manajemen
+                    <input name="email" type="email" autocomplete="username" required>
+                </label>
+                <label>
+                    Password
+                    <input name="password" type="password" autocomplete="current-password" required>
+                </label>
+            </div>
+            <div class="dialog-actions">
+                <button type="button" class="secondary-button" id="cancelAuth">Batal</button>
+                <button type="submit" class="primary-button">MASUK</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="memberDialog">
+        <form id="memberForm">
+            <div class="dialog-header">
+                <div>
+                    <p class="eyebrow">DATA ANGGOTA</p>
+                    <h2>Tambah Anggota Baru</h2>
+                </div>
+                <button type="button" class="close-button" id="closeMemberForm" aria-label="Tutup">×</button>
+            </div>
+            <div class="form-grid">
+                <label>
+                    Nama Lengkap
+                    <input name="name" type="text" placeholder="Nama anggota" required>
+                </label>
+                <label>
+                    ID Anggota
+                    <input name="id" type="text" placeholder="Otomatis jika kosong">
+                </label>
+                <label>
+                    Divisi / Jabatan
+                    <input name="division" type="text" placeholder="Contoh: Driver" required>
+                </label>
+                <label>
+                    Status
+                    <select name="status">
+                        <option value="ACTIVE">Aktif</option>
+                        <option value="INACTIVE">Tidak Aktif</option>
+                    </select>
+                </label>
+            </div>
+            <div class="dialog-actions">
+                <button type="button" class="secondary-button" id="cancelMemberForm">Batal</button>
+                <button type="submit" class="primary-button">Simpan Anggota</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="identityDialog">
+        <div id="identityCard"></div>
+        <div class="dialog-actions card-actions">
+            <button type="button" class="secondary-button" id="closeIdentity">Tutup</button>
+            <button type="button" class="primary-button" id="printIdentity">Cetak / Simpan PDF</button>
+        </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

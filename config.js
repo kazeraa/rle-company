@@ -36,6 +36,14 @@ const RLE_CONFIG = {
         headquarters: "Indonesia",
         industry: "Virtual Trucking",
         platform: "Truckers of Europe 3"
-    }
+    },
+
+    supabase: {
+        // Isi dari Supabase Project Settings > API. Jangan gunakan service_role key di browser.
+        url: "https://ammwiparzahttzyswlcu.supabase.co",
+        anonKey: "sb_publishable_4qErYzleS_8FvPhfbhzRsg_Lau003DB"
+    },
+
+    identityImportOrigins: []
 
 };

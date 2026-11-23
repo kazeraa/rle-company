@@ -1,5 +1,7 @@
 let members = [];
 let adminSession = null;
+let displayedCardMember = null;
+let verifiedCardMember = null;
 
 const supabaseSettings = RLE_CONFIG.supabase || {};
 const hasSupabaseConfig = Boolean(supabaseSettings.url && supabaseSettings.anonKey);
@@ -157,6 +159,7 @@ async function loadMembers() {
 }
 
 function showCheckError(message) {
+    verifiedCardMember = null;
     document.getElementById("checkResult").innerHTML = `
         <div class="empty-result">
             <div class="result-icon" style="color:#ef7a7a">!</div>
@@ -167,6 +170,7 @@ function showCheckError(message) {
 async function showCheckResult(rawId) {
     const id = rawId.trim().toUpperCase();
     const result = document.getElementById("checkResult");
+    verifiedCardMember = null;
     if (!supabaseClient) {
         showCheckError("Supabase belum dikonfigurasi");
         return;
@@ -191,6 +195,7 @@ async function showCheckResult(rawId) {
         return;
     }
 
+    verifiedCardMember = member;
     const active = member.status === "ACTIVE";
     result.innerHTML = `
         <div style="text-align:center">
@@ -200,6 +205,9 @@ async function showCheckResult(rawId) {
             <p style="color:${active ? "#62d69d" : "#ef7a7a"};font-size:12px;margin:14px 0 0">
                 ${active ? "IDENTITAS TERVERIFIKASI" : "IDENTITAS TIDAK AKTIF"}
             </p>
+            <button type="button" class="primary-button download-card-button" data-download-card="${escapeHtml(member.id)}">
+                Unduh Kartu PNG
+            </button>
         </div>`;
 }
 
@@ -232,8 +240,154 @@ function findMember(rawId) {
 function openCard(memberId) {
     const member = findMember(memberId);
     if (!member) return;
+    displayedCardMember = member;
     document.getElementById("identityCard").innerHTML = `<div class="identity-card">${cardContent(member)}</div>`;
     document.getElementById("identityDialog").showModal();
+}
+
+async function downloadMemberCard(member) {
+    try {
+        await document.fonts.ready;
+        const logo = new Image();
+        logo.src = "../assets/logo rle.jpeg";
+        await new Promise((resolve, reject) => {
+            logo.onload = resolve;
+            logo.onerror = () => reject(new Error("Logo RLE gagal dimuat"));
+        });
+
+        const scale = 2;
+        const width = 440;
+        const height = 278;
+        const canvas = document.createElement("canvas");
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Browser tidak mendukung pembuatan gambar");
+        context.scale(scale, scale);
+
+        const roundedRect = (x, y, rectWidth, rectHeight, radius) => {
+            context.beginPath();
+            context.moveTo(x + radius, y);
+            context.arcTo(x + rectWidth, y, x + rectWidth, y + rectHeight, radius);
+            context.arcTo(x + rectWidth, y + rectHeight, x, y + rectHeight, radius);
+            context.arcTo(x, y + rectHeight, x, y, radius);
+            context.arcTo(x, y, x + rectWidth, y, radius);
+            context.closePath();
+        };
+        const fitText = (text, maxWidth, startingSize, weight) => {
+            let size = startingSize;
+            context.font = `${weight} ${size}px Inter, sans-serif`;
+            while (context.measureText(text).width > maxWidth && size > 12) {
+                size -= 1;
+                context.font = `${weight} ${size}px Inter, sans-serif`;
+            }
+            return size;
+        };
+
+        roundedRect(0.5, 0.5, width - 1, height - 1, 14);
+        const background = context.createLinearGradient(0, 0, width, height);
+        background.addColorStop(0, "#171d24");
+        background.addColorStop(1, "#090b0e");
+        context.fillStyle = background;
+        context.fill();
+        context.save();
+        roundedRect(0.5, 0.5, width - 1, height - 1, 14);
+        context.clip();
+        context.translate(width / 2, height / 2);
+        context.rotate(-Math.PI / 6);
+        context.fillStyle = "rgba(212,173,97,0.2)";
+        context.font = "italic 800 20px Inter, sans-serif";
+        for (let x = -width; x < width; x += 105) {
+            for (let y = -height; y < height; y += 58) {
+                context.fillText("RLE", x, y);
+            }
+        }
+        context.restore();
+        context.save();
+        roundedRect(0.5, 0.5, width - 1, height - 1, 14);
+        context.clip();
+        context.strokeStyle = "rgba(212,173,97,0.18)";
+        context.lineWidth = 1;
+        context.beginPath();
+        context.arc(width - 10, height + 30, 110, 0, Math.PI * 2);
+        context.stroke();
+        context.restore();
+        context.strokeStyle = "rgba(212,173,97,0.5)";
+        context.lineWidth = 1;
+        roundedRect(0.5, 0.5, width - 1, height - 1, 14);
+        context.stroke();
+
+        context.save();
+        context.beginPath();
+        context.arc(58, 57, 17, 0, Math.PI * 2);
+        context.clip();
+        context.drawImage(logo, 41, 40, 34, 34);
+        context.restore();
+        context.fillStyle = "#eef1f4";
+        context.font = "700 19px Inter, sans-serif";
+        context.letterSpacing = "2px";
+        context.fillText("RLE", 94, 51);
+        context.fillStyle = "#d4ad61";
+        context.font = "500 8px Inter, sans-serif";
+        context.letterSpacing = "1.5px";
+        context.fillText("RANS LOGISTIK EUROPE", 94, 70);
+        context.strokeStyle = "rgba(255,255,255,0.08)";
+        context.beginPath();
+        context.moveTo(0, 95);
+        context.lineTo(width, 95);
+        context.stroke();
+
+        context.fillStyle = "#f0d28c";
+        context.font = "800 10px Inter, sans-serif";
+        context.letterSpacing = "2px";
+        context.fillText("ANGGOTA RESMI", 22, 126);
+        context.fillStyle = "#eef1f4";
+        const name = String(member.name || "");
+        context.letterSpacing = "0";
+        context.font = `400 ${fitText(name, 245, 32, "400")}px Inter, sans-serif`;
+        context.fillText(name, 22, 157);
+
+        context.font = "400 14px Inter, sans-serif";
+        const details = [
+            ["ID", member.id],
+            ["DIVISI", member.division],
+            ["BERGABUNG", formatDate(member.joined)]
+        ];
+        details.forEach(([label, value], index) => {
+            const y = 181 + index * 21;
+            context.fillStyle = "#8e96a1";
+            context.fillText(label, 22, y);
+            const labelWidth = context.measureText(label).width + 8;
+            const valueText = String(value || "-");
+            context.fillStyle = "#eef1f4";
+            context.font = `700 ${fitText(valueText, 230 - labelWidth, 14, "700")}px Inter, sans-serif`;
+            context.fillText(valueText, 22 + labelWidth, y);
+            context.font = "400 14px Inter, sans-serif";
+        });
+
+        const active = member.status === "ACTIVE";
+        context.strokeStyle = "rgba(255,255,255,0.08)";
+        context.beginPath();
+        context.arc(344, 162, 46, 0, Math.PI * 2);
+        context.stroke();
+        context.fillStyle = active ? "#62d69d" : "#ef7a7a";
+        context.font = "500 12px Inter, sans-serif";
+        context.textAlign = "center";
+        context.fillText(active ? "VALID" : "STATUS", 344, 158);
+        context.fillText(active ? "AKTIF" : "INACTIVE", 344, 174);
+
+        const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob(result => result ? resolve(result) : reject(new Error("Gambar kartu gagal dibuat")), "image/png");
+        });
+        const link = document.createElement("a");
+        link.download = `Kartu-${String(member.id).replace(/[^a-z0-9_-]/gi, "-")}.png`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    } catch (error) {
+        console.error("Gagal mengunduh kartu anggota.", error);
+        showToast(`Kartu gagal diunduh: ${error.message}`);
+    }
 }
 
 
@@ -489,7 +643,17 @@ document.getElementById("publicCheckForm").addEventListener("submit", async even
 });
 
 document.getElementById("closeIdentity").addEventListener("click", () => document.getElementById("identityDialog").close());
+document.getElementById("downloadIdentity").addEventListener("click", () => {
+    if (displayedCardMember) void downloadMemberCard(displayedCardMember);
+});
 document.getElementById("printIdentity").addEventListener("click", () => window.print());
+document.getElementById("checkResult").addEventListener("click", event => {
+    const downloadButton = event.target.closest("[data-download-card]");
+    if (!downloadButton) return;
+    if (verifiedCardMember?.id === downloadButton.dataset.downloadCard) {
+        void downloadMemberCard(verifiedCardMember);
+    }
+});
 
 window.addEventListener("message", event => {
     const allowedOrigins = RLE_CONFIG.identityImportOrigins || [];

@@ -161,6 +161,7 @@ dialog::backdrop { background: rgba(0,0,0,.78); backdrop-filter: blur(5px); }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid label { display: grid; gap: 8px; color: var(--muted); font-size: 12px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+.download-card-button { margin-top: 16px; }
 
 .identity-card {
     width: 440px;
@@ -172,12 +173,21 @@ dialog::backdrop { background: rgba(0,0,0,.78); backdrop-filter: blur(5px); }
     background: linear-gradient(135deg, #171d24, #090b0e);
     position: relative;
 }
+.identity-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='70'%3E%3Ctext x='8' y='38' transform='rotate(-25 60 35)' fill='%23d4ad61' fill-opacity='.2' font-family='Arial' font-size='17' font-style='italic' font-weight='700'%3ERLE%3C/text%3E%3C/svg%3E");
+    background-repeat: repeat;
+}
 .identity-card::after { content: ""; position: absolute; width: 220px; height: 220px; right: -100px; bottom: -145px; border: 1px solid rgba(212,173,97,.18); border-radius: 50%; }
-.card-head { height: 76px; display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-bottom: 1px solid var(--line); }
+.card-head { position: relative; z-index: 2; height: 76px; display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-bottom: 1px solid var(--line); }
 .card-head img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
 .card-head strong { display: block; letter-spacing: 2px; }
 .card-head span { color: var(--gold); font-size: 8px; letter-spacing: 1.5px; }
-.card-body { display: grid; grid-template-columns: 1fr 110px; align-items: center; padding: 24px 22px; }
+.card-body { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 110px; align-items: center; padding: 24px 22px; }
 .card-name { font-size: 22px; margin: 6px 0 10px; }
 .card-info { color: var(--muted); font-size: 10px; display: grid; gap: 7px; }
 .card-info b { color: var(--text); margin-left: 5px; }

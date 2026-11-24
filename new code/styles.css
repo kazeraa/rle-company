@@ -162,6 +162,18 @@ dialog::backdrop { background: rgba(0,0,0,.78); backdrop-filter: blur(5px); }
 .form-grid label { display: grid; gap: 8px; color: var(--muted); font-size: 12px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
 .download-card-button { margin-top: 16px; }
+.delete-member-message { margin: 4px 0 0; color: var(--muted); line-height: 1.6; }
+.danger-button {
+    min-height: 42px;
+    border: 1px solid #ef7a7a;
+    border-radius: 7px;
+    padding: 0 18px;
+    background: #ef7a7a;
+    color: #160707;
+    font-size: 12px;
+    font-weight: 800;
+}
+.danger-button:hover { background: #ff9a9a; }
 
 .identity-card {
     width: 440px;

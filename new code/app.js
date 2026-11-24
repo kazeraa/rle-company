@@ -2,6 +2,7 @@ let members = [];
 let adminSession = null;
 let displayedCardMember = null;
 let verifiedCardMember = null;
+let pendingDeleteMemberId = null;
 
 const supabaseSettings = RLE_CONFIG.supabase || {};
 const hasSupabaseConfig = Boolean(supabaseSettings.url && supabaseSettings.anonKey);
@@ -406,11 +407,7 @@ async function resolveAdminSession(user) {
 
     const role = String(data.role).toUpperCase();
 
-    const allowedRoles = [
-        "OWNER",
-        "ADMIN",
-        "MANAGEMENT"
-    ];
+    const allowedRoles = ["OWNER", "ADMIN", "MANAGEMENT"];
 
     if (!allowedRoles.includes(role)) {
         return null;
@@ -617,17 +614,40 @@ document.getElementById("memberTable").addEventListener("click", async event => 
     const cardButton = event.target.closest("[data-card]");
     const deleteButton = event.target.closest("[data-delete]");
     if (cardButton) openCard(cardButton.dataset.card);
-    if (deleteButton && isAdmin() && confirm("Hapus anggota ini dari sistem?")) {
-        const { error } = await supabaseClient.from("members").delete().eq("id", deleteButton.dataset.delete);
-        if (error) {
-            console.error("Gagal menghapus anggota dari Supabase.", error);
-            showToast(`Gagal menghapus: ${formatSupabaseError(error)}`);
-            return;
-        }
-        members = members.filter(member => member.id !== deleteButton.dataset.delete);
-        renderAll();
-        showToast("Anggota berhasil dihapus");
+    if (deleteButton && isAdmin()) {
+        pendingDeleteMemberId = deleteButton.dataset.delete;
+        const member = findMember(pendingDeleteMemberId);
+        document.querySelector(".delete-member-message").textContent =
+            member
+                ? `Anggota ${member.name} (${member.id}) akan dihapus dari sistem kartu identitas.`
+                : "Anggota ini akan dihapus dari sistem kartu identitas.";
+        document.getElementById("deleteMemberDialog").showModal();
     }
+});
+
+function closeDeleteMemberDialog() {
+    pendingDeleteMemberId = null;
+    document.getElementById("deleteMemberDialog").close();
+}
+
+document.getElementById("closeDeleteMember").addEventListener("click", closeDeleteMemberDialog);
+document.getElementById("cancelDeleteMember").addEventListener("click", closeDeleteMemberDialog);
+document.getElementById("confirmDeleteMember").addEventListener("click", async () => {
+    if (!pendingDeleteMemberId || !isAdmin()) return;
+
+    const memberId = pendingDeleteMemberId;
+    const { error } = await supabaseClient.from("members").delete().eq("id", memberId);
+    if (error) {
+        console.error("Gagal menghapus anggota dari Supabase.", error);
+        closeDeleteMemberDialog();
+        showToast(`Gagal menghapus: ${formatSupabaseError(error)}`);
+        return;
+    }
+
+    members = members.filter(member => member.id !== memberId);
+    closeDeleteMemberDialog();
+    renderAll();
+    showToast("Anggota berhasil dihapus");
 });
 
 document.getElementById("quickCheckForm").addEventListener("submit", async event => {

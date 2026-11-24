@@ -209,6 +209,21 @@
         </form>
     </dialog>
 
+    <dialog id="deleteMemberDialog">
+        <div class="dialog-header">
+            <div>
+                <p class="eyebrow">KONFIRMASI HAPUS</p>
+                <h2>Hapus anggota?</h2>
+            </div>
+            <button type="button" class="close-button" id="closeDeleteMember" aria-label="Tutup">×</button>
+        </div>
+        <p class="delete-member-message">Anggota ini akan dihapus dari sistem kartu identitas.</p>
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" id="cancelDeleteMember">Batal</button>
+            <button type="button" class="danger-button" id="confirmDeleteMember">Ya, hapus</button>
+        </div>
+    </dialog>
+
     <dialog id="identityDialog">
         <div id="identityCard"></div>
         <div class="dialog-actions card-actions">

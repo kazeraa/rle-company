@@ -36,6 +36,9 @@ function formatSupabaseError(error) {
     ) {
         return "Tabel public.members belum tersedia. Jalankan ulang new code/supabase.sql di Supabase SQL Editor.";
     }
+    if (error?.code === "23505" || /duplicate key value/i.test(message)) {
+        return "ID anggota sudah digunakan. Kosongkan kolom ID agar sistem memilih ID berikutnya, atau masukkan ID lain.";
+    }
     return message;
 }
 
@@ -64,13 +67,6 @@ function formatDate(date) {
     if (!date) return "-";
     return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
         .format(new Date(`${date}T12:00:00`));
-}
-
-function nextId() {
-    const numbers = members
-        .map(member => Number(String(member.id).match(/\d+$/)?.[0]))
-        .filter(Number.isFinite);
-    return `RLE-${String(Math.max(0, ...numbers) + 1).padStart(6, "0")}`;
 }
 
 function showView(viewName) {
@@ -541,7 +537,6 @@ document.getElementById("openMemberForm").addEventListener("click", () => {
     if (!isAdmin()) return;
     const form = document.getElementById("memberForm");
     form.reset();
-    form.elements.id.value = nextId();
     document.getElementById("memberDialog").showModal();
 });
 document.getElementById("migrateLocalData").addEventListener("click", async () => {
@@ -580,19 +575,12 @@ document.getElementById("memberForm").addEventListener("submit", async event => 
     }
 
     const data = new FormData(event.currentTarget);
-    const id = String(data.get("id") || "").trim().toUpperCase() || nextId();
-    const newMember = {
-        id,
-        name: String(data.get("name")).trim(),
-        division: String(data.get("division")).trim(),
-        status: String(data.get("status")),
-        joined: new Date().toISOString().slice(0, 10)
-    };
-    const { data: savedMember, error } = await supabaseClient
-        .from("members")
-        .insert(newMember)
-        .select("id, name, division, status, joined")
-        .single();
+    const { data: savedMember, error } = await supabaseClient.rpc("create_member", {
+        p_member_id: String(data.get("id") || "").trim().toUpperCase() || null,
+        p_name: String(data.get("name")).trim(),
+        p_division: String(data.get("division")).trim(),
+        p_status: String(data.get("status"))
+    }).single();
 
     if (error) {
         console.error("Gagal menyimpan anggota ke Supabase.", error);
